@@ -1,6 +1,10 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:workmanager/workmanager.dart';
+
+import 'Statics.dart';
 
 void main() {
 
@@ -29,7 +33,7 @@ void main() {
     // Android will automatically change
     // your frequency to 15 min
     // if you have configured a lower frequency.
-    frequency: Duration(seconds: 15),
+    frequency: Duration(minutes: 15),
   );
   //Workmanager.registerOneOffTask("uniqueName", taskName)
   runApp(MyApp());
@@ -86,10 +90,11 @@ Future _showNotificationWithDefaultSound(flip) async {
       androidPlatformChannelSpecifics,
       iOSPlatformChannelSpecifics
   );
-
+  var rnd = new Random();
+  int randomx=rnd.nextInt(Statics.map.length-1);
   //thread
-  await flip.show(0, 'GeeksforGeeks',
-      'Your are one step away to connect with GeeksforGeeks',
+  await flip.show(0, Statics.map[randomx],
+      Statics.map[randomx],
       platformChannelSpecifics, payload: 'Default_Sound'
   );
 }
@@ -99,6 +104,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Geeks Demo',
       theme: ThemeData(
 
@@ -106,7 +112,7 @@ class MyApp extends StatelessWidget {
         // of your application.
         primarySwatch: Colors.green,
       ),
-      home: HomePage(title: "GeeksforGeeks"),
+      home: HomePage(title: "English Words"),
     );
   }
 }
@@ -153,7 +159,35 @@ class _HomePageState extends State<HomePage> {
         // to set our appbar title.
         title: Text(widget.title),
       ),
-      body: new Container(),
+      body: new Container(
+          padding: new EdgeInsets.all(32.0),
+          child: new Center(
+            child: new Column(
+              children: <Widget>[
+                new Text('Words', style: new TextStyle(fontWeight: FontWeight.bold),),
+
+                /*Listview diplay rows for different widgets,
+                Listview.builder automatically builds its child widgets with a
+                template and a list*/
+
+                new Expanded(child: new ListView.builder(
+                  itemCount: Statics.map.length,
+                  itemBuilder: (BuildContext context, int index){
+                    int key = Statics.map.keys.elementAt(index);
+                    return new Row(
+                      children: <Widget>[
+                        new Text('${key} :[ '),
+                        new Text(Statics.map[key]+" ]")
+                      ],
+                    );
+                  },
+
+                ))
+
+              ],
+            ),
+          )
+      ),
     );
   }
 }
