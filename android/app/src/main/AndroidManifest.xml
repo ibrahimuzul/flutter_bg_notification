@@ -9,7 +9,7 @@
     <!-- Add below permission inside 'manifest' tag -->
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
     <!-- Add below permission inside 'application' tag -->
-
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <application
         android:name="io.flutter.app.FlutterApplication"

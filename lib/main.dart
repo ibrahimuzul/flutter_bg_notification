@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -5,6 +6,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:workmanager/workmanager.dart';
 
 import 'Statics.dart';
+import 'package:screen/screen.dart';
 
 void main() {
 
@@ -35,7 +37,11 @@ void main() {
     // if you have configured a lower frequency.
     frequency: Duration(minutes: 15),
   );
-  //Workmanager.registerOneOffTask("uniqueName", taskName)
+  Workmanager.registerOneOffTask("uniqueName", "callbackDispatcher");
+
+
+
+
   runApp(MyApp());
 }
 
@@ -54,6 +60,12 @@ void callbackDispatcher() {
     var settings = new InitializationSettings(android, IOS);
     flip.initialize(settings);
 
+/*    for (int i =0 ;i<14;i++){
+      sleep1().then((value) => {
+        _showNotificationWithDefaultSound(flip)
+      });
+    }*/
+
 //    while(true) {
 //
 //      sleep1().then((value) => {
@@ -69,7 +81,7 @@ void callbackDispatcher() {
 }
 
 Future sleep1() {
-  return new Future.delayed(const Duration(seconds: 5), () => "1");
+  return new Future.delayed(const Duration(seconds: 60), () => "1");
 }
 
 Future _showNotificationWithDefaultSound(flip) async {
@@ -103,9 +115,10 @@ class MyApp extends StatelessWidget {
 // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    Screen.keepOn(true);
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Geeks Demo',
+      title: 'English Words',
       theme: ThemeData(
 
         // This is the theme
@@ -119,19 +132,6 @@ class MyApp extends StatelessWidget {
 
 class HomePage extends StatefulWidget {
   HomePage({Key key, this.title}) : super(key: key);
-// This widget is the home page of your application.
-// It is stateful, meaning
-// that it has a State object (defined below)
-// that contains fields that affect
-// how it looks.
-
-// This class is the configuration for the state.
-// It holds the values (in this
-// case the title) provided by the parent
-// (in this case the App widget) and
-// used by the build method of the State.
-// Fields in a Widget subclass are
-// always marked "final".
 
   final String title;
 
@@ -140,45 +140,65 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  String value="";
+
+
+@override
+  void initState() {
+    // TODO: implement initState
+
+  Timer.periodic(Duration(seconds: 10), (timer) {
+    var rnd = new Random();
+    int randomx=rnd.nextInt(Statics.map.length-1);
+    value=Statics.map[randomx];
+    //print(value);
+    setState(() {
+
+    });
+  });
+
+    super.initState();
+  }
+
+
+
   @override
   Widget build(BuildContext context) {
 
-    // This method is rerun every time setState is called.
-    // The Flutter framework has been optimized
-    // to make rerunning build methods
-    // fast, so that you can just rebuild
-    // anything that needs updating rather
-    // than having to individually change
-    //instances of widgets.
+
+
+
     return Scaffold(
       appBar: AppBar(
 
-        // Here we take the value from
-        // the MyHomePage object that was created by
-        // the App.build method, and use it
-        // to set our appbar title.
+
         title: Text(widget.title),
       ),
       body: new Container(
-          padding: new EdgeInsets.all(32.0),
+          padding: new EdgeInsets.all(10.0),
           child: new Center(
             child: new Column(
               children: <Widget>[
-                new Text('Words', style: new TextStyle(fontWeight: FontWeight.bold),),
+                new Text('Words', style: new TextStyle(fontWeight: FontWeight.bold,fontSize: 18),),
+                new SizedBox(height: 10,),
+                new Text(value, style: new TextStyle(fontWeight: FontWeight.bold,fontSize: 16),),
 
-                /*Listview diplay rows for different widgets,
-                Listview.builder automatically builds its child widgets with a
-                template and a list*/
+                new SizedBox(height: 10,),
+                new Expanded(
+                    child: new ListView.builder(
 
-                new Expanded(child: new ListView.builder(
                   itemCount: Statics.map.length,
                   itemBuilder: (BuildContext context, int index){
                     int key = Statics.map.keys.elementAt(index);
-                    return new Row(
-                      children: <Widget>[
-                        new Text('${key} :[ '),
-                        new Text(Statics.map[key]+" ]")
-                      ],
+                    return SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: new Row(
+
+                        children: <Widget>[
+                          new Text('${key} :[ '),
+                          new Text(Statics.map[key]+" ]")
+                        ],
+                      ),
                     );
                   },
 
